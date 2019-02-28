@@ -6,10 +6,10 @@ const score = (current, next) => {
   const same = intersection(current.tags, next.tags);
   const differenceA = difference(current.tags, next.tags);
   const differenceB = difference(next.tags, current.tags);
-
-  return Math.min(same, differenceA, differenceB);
+  return Math.min(same.size, differenceA.size, differenceB.size);
 };
 
 module.exports = {
-  score, union
+  score,
+  union
 };
