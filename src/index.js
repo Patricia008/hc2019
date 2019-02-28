@@ -1,32 +1,21 @@
-const fs = require('fs');
-const { files } = require('./constants');
-const { buildGreedy } = require('./alg/greedy');
-
-const union = (a, b) => new Set([...a, ...b]);
-const intersection = (a, b) => new Set([...a].filter(x => b.has(x)));
-const difference = (a, b) => new Set([...a].filter(x => !b.has(x)));
-
-const score = (current, next) => {
-  const same = intersection(current.tags, next.tags);
-  const differenceA = difference(current.tags, next.tags);
-  const differenceB = difference(next.tags, current.tags);
-
-  return Math.min(same, differenceA, differenceB);
-};
+const fs = require("fs");
+const { files } = require("./constants");
+const { inline } = require("./alg/inline");
 
 const parseFile = filename => {
   const fileContent = fs
     .readFileSync(filename)
     .toString()
-    .split('\n');
+    .split("\n");
 
+  fileContent.shift();
   return fileContent
     .map((pictureStr, slideIndex) => parsePicture(slideIndex, pictureStr))
     .reduce(
       (agg, currentPicture) => {
-        if (currentPicture.type === 'H') {
+        if (currentPicture.type === "H") {
           agg.horizontal.push(currentPicture);
-        } else if (currentPicture.type === 'V') {
+        } else if (currentPicture.type === "V") {
           agg.vertical.push(currentPicture);
         }
         return agg;
@@ -39,10 +28,6 @@ const parsePicture = (slideId, slideStr) => {
   const [type, _, ...tags] = slideStr.split(/\s+/);
   return { type, id: slideId, tags: new Set(tags) };
 };
-
-const parsedPictures = parseFile(files.c);
-
-parsedPictures.vertical.sort((a, b) => a.tags.size - b.tags.size);
 
 const print = (filename, slides) => {
   let output = `${slides.length}\n`;
@@ -57,7 +42,9 @@ const print = (filename, slides) => {
   fs.writeFileSync(filename, output, { flag: "w" });
 };
 
-print("data/output.txt", [{ H: { id: 1 } }, { V: [{ id: 2 }, { id: 3 }] }]);
+Object.keys(files).forEach(file => {
+  print(`data/output${file}.txt`, inline(parseFile(files[file])));
+});
 
 //   H V
 // A 2     2
@@ -65,4 +52,3 @@ print("data/output.txt", [{ H: { id: 1 } }, { V: [{ id: 2 }, { id: 3 }] }]);
 // C 500   500
 // D 30000 60000
 // E 0     80000
-buildGreedy(parsedPictures);
