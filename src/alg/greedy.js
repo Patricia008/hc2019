@@ -5,15 +5,38 @@ const buildGreedy = parsedPictures => {
 
   const solution = [buildSolutionEntry(parsedPictures.horizontal.shift() || [parsedPictures.vertical.shift(), parsedPictures.vertical.shift()])];
 
-  console.log(findBestNextStep(unpackSolutionEntry(solution[0]), parsedPictures));
+  const N = parsedPictures.vertical.length / 2 + parsedPictures.horizontal.length
+
+  let horizontalMax = {}
+  let verticalMax = {}
+
+  for(let i = 0; i < N-1; i++) {
+    [horizontalMax1, verticalMax1] = findBestNextStep(unpackSolutionEntry(solution[solution.length-1]), parsedPictures);
+    if(horizontalMax.maxSlide === horizontalMax1 || verticalMax.maxSlide === verticalMax1) {
+      return solution
+    }
+    horizontalMax = horizontalMax1
+    verticalMax = verticalMax1
+    if(horizontalMax.maxScore > verticalMax.maxScore) {
+     // console.log(JSON.stringify(horizontalMax))
+      solution.push(buildSolutionEntry(horizontalMax.maxSlide))
+      // parsedPictures.delete(parsedPictures.filter(e => e.id === horizontalMax.id))
+      parsedPictures.horizontal = parsedPictures.horizontal.filter(x => x.id != horizontalMax.maxSlide.id)
+      // .splice(parsedPictures.horizontal.indexOf(horizontalMax.maxSlide), 1)
+    } else {
+      solution.push(buildSolutionEntry(verticalMax.maxSlide))
+      // parsedPictures.vertical.splice(parsedPictures.vertical.indexOf(verticalMax.maxSlide[0]), 1)
+      parsedPictures.vertical = parsedPictures.vertical.filter(x => (x.id != verticalMax.maxSlide[0].id && x.id != verticalMax.maxSlide[1].id))
+      // parsedPictures.vertical.splice(parsedPictures.vertical.indexOf(verticalMax.maxSlide[1]), 1)
+    }
+  }
+  return solution
 };
 
 const findBestNextStep = (currentPicture, pictures) => {
   const { horizontal, vertical } = pictures;
   const horizontalMax = computeMaxHorizontalSlide(currentPicture, horizontal);
   const verticalMax = computeMaxVerticalSlide(currentPicture, vertical);
-  console.log('hori=', horizontalMax)
-  console.log('verti=', verticalMax)
 
   return [horizontalMax, verticalMax]; //picture
 };
@@ -27,14 +50,14 @@ const computeMaxHorizontalSlide = (currentPicture, horizontal) => {
       }
       return agg;
     },
-    { maxSlide: {}, maxScore: 0 }
+    { maxSlide: currentPicture, maxScore: 0 }
   );
 };
 
 const computeMaxVerticalSlide = (currentPicture, vertical) => {
   // iterate all combinations of verticals and find best combo
   let maxScore = -1;
-  let maxSlide = [];
+  let maxSlide = [vertical[0], vertical[1]];
 
   for(let i = 0; i < vertical.length - 1; i++) {
     for(let j = i; j < vertical.length; j++) {
@@ -52,15 +75,15 @@ const computeMaxVerticalSlide = (currentPicture, vertical) => {
 };
 
 const unpackSolutionEntry = solutionEntry => {
-  const x = solutionEntry.h || { tags: union(solutionEntry.v[0].tags, solutionEntry.v[1].tags)};
+  const x = solutionEntry.H || { tags: union(solutionEntry.V[0].tags, solutionEntry.V[1].tags)};
   return x;
 };
 
 const buildSolutionEntry = parsedPicture => {
   if (parsedPicture.type === 'H') {
-    return { h: parsedPicture };
+    return { H: parsedPicture };
   } else if (Array.isArray(parsedPicture)) {
-    return { v: parsedPicture };
+    return { V: parsedPicture };
   }
 };
 

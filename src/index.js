@@ -20,6 +20,8 @@ const parseFile = filename => {
     .toString()
     .split('\n');
 
+    const size = fileContent.shift();
+
   return fileContent
     .map((pictureStr, slideIndex) => parsePicture(slideIndex, pictureStr))
     .reduce(
@@ -40,7 +42,7 @@ const parsePicture = (slideId, slideStr) => {
   return { type, id: slideId, tags: new Set(tags) };
 };
 
-const parsedPictures = parseFile(files.c);
+const parsedPictures = parseFile(files.b);
 
 parsedPictures.vertical.sort((a, b) => a.tags.size - b.tags.size);
 
@@ -57,7 +59,7 @@ const print = (filename, slides) => {
   fs.writeFileSync(filename, output, { flag: "w" });
 };
 
-print("data/output.txt", [{ H: { id: 1 } }, { V: [{ id: 2 }, { id: 3 }] }]);
+print("data/b_out.txt", buildGreedy(parsedPictures));
 
 //   H V
 // A 2     2
