@@ -44,7 +44,20 @@ const parsedPictures = parseFile(files.a);
 
 parsedPictures.vertical.sort((a, b) => a.tags.size - b.tags.size);
 
-const output = slides => {};
+const print = (filename, slides) => {
+  let output = `${slides.length}\n`;
+  slides.forEach(slide => {
+    if (slide.hasOwnProperty("H")) {
+      output += slide["H"].id + "\n";
+    } else if (slide.hasOwnProperty("V")) {
+      output += slide["V"].map(image => image.id).join(" ") + "\n";
+    }
+  });
+
+  fs.writeFileSync(filename, output, { flag: "w" });
+};
+
+print("data/output.txt", [{ H: { id: 1 } }, { V: [{ id: 2 }, { id: 3 }] }]);
 
 //   H V
 // A 2     2
