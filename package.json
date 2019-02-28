@@ -1,0 +1,24 @@
+{
+  "name": "hc2019",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThatKidFlo/hc2019.git"
+  },
+  "keywords": [
+    "hc",
+    "winners"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ThatKidFlo/hc2019/issues"
+  },
+  "homepage": "https://github.com/ThatKidFlo/hc2019#readme"
+}
