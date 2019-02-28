@@ -20,13 +20,13 @@ const parseFile = filename => {
     .split("\n");
 
   return fileContent
-    .map((slideStr, slideIndex) => parseSlide(slideIndex, slideStr))
+    .map((pictureStr, slideIndex) => parsePicture(slideIndex, pictureStr))
     .reduce(
-      (agg, currentSlide) => {
-        if (currentSlide.type === "H") {
-          agg.horizontal.push(currentSlide);
-        } else if (currentSlide.type === "V") {
-          agg.vertical.push(currentSlide);
+      (agg, currentPicture) => {
+        if (currentPicture.type === "H") {
+          agg.horizontal.push(currentPicture);
+        } else if (currentPicture.type === "V") {
+          agg.vertical.push(currentPicture);
         }
         return agg;
       },
@@ -34,11 +34,11 @@ const parseFile = filename => {
     );
 };
 
-const parseSlide = (slideId, slideStr) => {
+const parsePicture = (slideId, slideStr) => {
   const [type, _, ...tags] = slideStr.split(/\s+/);
   return { type, id: slideId, tags: new Set(tags) };
 };
 
-const parsedSlides = parseFile(files.d);
+const parsedPictures = parseFile(files.d);
 
-console.log(parsedSlides);
+console.log(parsedPictures);
