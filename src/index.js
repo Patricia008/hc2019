@@ -40,7 +40,7 @@ const parsePicture = (slideId, slideStr) => {
   return { type, id: slideId, tags: new Set(tags) };
 };
 
-const parsedPictures = parseFile(files.a);
+const parsedPictures = parseFile(files.c);
 
 parsedPictures.vertical.sort((a, b) => a.tags.size - b.tags.size);
 

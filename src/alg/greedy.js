@@ -12,7 +12,8 @@ const findBestNextStep = (currentPicture, pictures) => {
   const { horizontal, vertical } = pictures;
   const horizontalMax = computeMaxHorizontalSlide(currentPicture, horizontal);
   const verticalMax = computeMaxVerticalSlide(currentPicture, vertical);
-  console.log('currentPicture=', currentPicture)
+  console.log('hori=', horizontalMax)
+  console.log('verti=', verticalMax)
 
   return [horizontalMax, verticalMax]; //picture
 };
@@ -32,19 +33,21 @@ const computeMaxHorizontalSlide = (currentPicture, horizontal) => {
 
 const computeMaxVerticalSlide = (currentPicture, vertical) => {
   // iterate all combinations of verticals and find best combo
-  let maxScore = 0;
+  let maxScore = -1;
   let maxSlide = [];
-  vertical.forEach(v1 => {
-    vertical.forEach(v2 => {
-      if (v1.id !== v2.id) {
-        const newScore = score(currentPicture, { tags: new Set([...v1.tags, ...v2.tags]) });
+
+  for(let i = 0; i < vertical.length - 1; i++) {
+    for(let j = i; j < vertical.length; j++) {
+      if (vertical[i].id !== vertical[j].id) {
+        const newScore = score(currentPicture, { tags: new Set([...vertical[i].tags, ...vertical[j].tags]) });
         if (newScore > maxScore) {
           maxScore = newScore;
-          maxSlide = [v1, v2];
+          maxSlide = [vertical[i], vertical[j]];
         }
       }
-    });
-  });
+    }
+  }
+  []
   return { maxSlide, maxScore };
 };
 
