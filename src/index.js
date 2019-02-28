@@ -1,6 +1,8 @@
 const fs = require("fs");
 const { files } = require("./constants");
 const { inline } = require("./alg/inline");
+const { shuffle } = require("lodash");
+const { scoreSlides } = require("./alg/score");
 
 const parseFile = filename => {
   const fileContent = fs
@@ -42,9 +44,18 @@ const print = (filename, slides) => {
   fs.writeFileSync(filename, output, { flag: "w" });
 };
 
-Object.keys(files).forEach(file => {
-  print(`data/output${file}.txt`, inline(parseFile(files[file])));
-});
+while (true) {
+  Object.keys(files).forEach(file => {
+    let batch = Date.now();
+    let parsed = parseFile(files[file]);
+    let { horizontal, vertical } = parsed;
+    parsed = { horizontal: shuffle(horizontal), vertical: shuffle(vertical) };
+    let result = inline(parsed);
+    score = scoreSlides(result);
+
+    print(`data/output${file}-${batch}-${score}.txt`, result);
+  });
+}
 
 //   H V
 // A 2     2
