@@ -39,6 +39,15 @@ const parsePicture = (slideId, slideStr) => {
   return { type, id: slideId, tags: new Set(tags) };
 };
 
-const parsedPictures = parseFile(files.d);
+const parsedPictures = parseFile(files.b);
 
-console.log(parsedPictures);
+parsedPictures.vertical.sort((a, b) => a.tags.length - b.tags.length);
+
+const output = slides => {};
+
+//   H V
+// A 2     2
+// B 80000 0
+// C 500   500
+// D 30000 60000
+// E 0     80000
