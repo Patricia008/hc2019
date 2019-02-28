@@ -44,6 +44,7 @@ const print = (filename, slides) => {
   fs.writeFileSync(filename, output, { flag: "w" });
 };
 
+let maxScores = {};
 while (true) {
   Object.keys(files).forEach(file => {
     let batch = Date.now();
@@ -53,7 +54,12 @@ while (true) {
     let result = inline(parsed);
     score = scoreSlides(result);
 
-    print(`data/output${file}-${batch}-${score}.txt`, result);
+    maxScores[file] = maxScores[file] || score;
+    if (maxScores[file] < score) {
+      maxScores[file] = score;
+      console.log("", maxScores);
+      print(`data/output${file}-${batch}-${score}.txt`, result);
+    }
   });
 }
 
