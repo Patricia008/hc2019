@@ -1,5 +1,6 @@
-const fs = require("fs");
-const { files } = require("./constants");
+const fs = require('fs');
+const { files } = require('./constants');
+const { buildGreedy } = require('./alg/greedy');
 
 const union = (a, b) => new Set([...a, ...b]);
 const intersection = (a, b) => new Set([...a].filter(x => b.has(x)));
@@ -17,15 +18,15 @@ const parseFile = filename => {
   const fileContent = fs
     .readFileSync(filename)
     .toString()
-    .split("\n");
+    .split('\n');
 
   return fileContent
     .map((pictureStr, slideIndex) => parsePicture(slideIndex, pictureStr))
     .reduce(
       (agg, currentPicture) => {
-        if (currentPicture.type === "H") {
+        if (currentPicture.type === 'H') {
           agg.horizontal.push(currentPicture);
-        } else if (currentPicture.type === "V") {
+        } else if (currentPicture.type === 'V') {
           agg.vertical.push(currentPicture);
         }
         return agg;
@@ -39,9 +40,9 @@ const parsePicture = (slideId, slideStr) => {
   return { type, id: slideId, tags: new Set(tags) };
 };
 
-const parsedPictures = parseFile(files.b);
+const parsedPictures = parseFile(files.a);
 
-parsedPictures.vertical.sort((a, b) => a.tags.length - b.tags.length);
+parsedPictures.vertical.sort((a, b) => a.tags.size - b.tags.size);
 
 const output = slides => {};
 
@@ -51,3 +52,4 @@ const output = slides => {};
 // C 500   500
 // D 30000 60000
 // E 0     80000
+buildGreedy(parsedPictures);
