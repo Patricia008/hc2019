@@ -16,7 +16,7 @@
     "winners"
   ],
   "dependencies": {
-    "lodash": "4.17.11"
+    "lodash": "4.17.21"
   },
   "author": "",
   "license": "ISC",
